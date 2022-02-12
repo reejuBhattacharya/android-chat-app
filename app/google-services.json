@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "207429729142",
+    "project_id": "kotlin-chatapp-reeju",
+    "storage_bucket": "kotlin-chatapp-reeju.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207429729142:android:48374eba68f8aeb1045857",
+        "android_client_info": {
+          "package_name": "com.example.reejubhai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207429729142-gaeq50oe73kb4i3jhcq5u7ahnrarn85i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW-V2g2_teAq2qcTjUWmK2Kcus1_4BolI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207429729142-gaeq50oe73kb4i3jhcq5u7ahnrarn85i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
