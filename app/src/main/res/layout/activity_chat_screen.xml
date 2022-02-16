@@ -30,7 +30,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/teal_200"
+        android:background="@color/white"
         android:id="@+id/chat_screen_recyclerview"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/chat_screen_send_button"

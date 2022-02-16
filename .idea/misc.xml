@@ -5,14 +5,14 @@
       <map>
         <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_add_message.xml" value="0.264" />
         <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_add_message_item.xml" value="0.264" />
-        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_chat_screen.xml" value="0.4" />
+        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_chat_screen.xml" value="0.3888888888888889" />
         <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_login.xml" value="0.4" />
         <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_newest_messages.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_signup.xml" value="0.264" />
-        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/message_left.xml" value="0.4" />
-        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/message_right.xml" value="0.4" />
-        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/newest_messages_item.xml" value="0.41624365482233505" />
+        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/activity_signup.xml" value="0.2" />
+        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/message_left.xml" value="0.2" />
+        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/message_right.xml" value="0.2" />
+        <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/layout/newest_messages_item.xml" value="0.264" />
         <entry key="..\:/Users/reeju/StudioProjects/ChatApplication/app/src/main/res/menu/newest_messages_activity_menu.xml" value="0.264" />
       </map>
     </option>

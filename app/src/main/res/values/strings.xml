@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ChatApplication</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="back_to_sign_up_screen">Back to Sign Up screen</string>
+    <string name="login">Login</string>
+    <string name="username">username</string>
+    <string name="email_id">Email ID</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_signed_up_before">Already signed up before? Login</string>
+    <string name="set_your_profile_picture">Click to set your Profile Picture</string>
 </resources>
