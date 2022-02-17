@@ -9,7 +9,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.reejubhai.databinding.ActivitySignupBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
@@ -32,7 +37,7 @@ class SignupActivity : AppCompatActivity() {
         goToLogin()
         selectProfilePhoto()
         signUp()
-
+        googleSignin()
     }
 
     private fun goToLogin()
@@ -78,9 +83,6 @@ class SignupActivity : AppCompatActivity() {
         val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
             profilePhotoUri = it
-//            val bitmapdrawable  = BitmapDrawable(bitmap)
-//            val imageBitmap = binding.signupProfilepicButton.setImageBitmap(bitmap)
-            //val compressedImage =
             binding.signupProfilepicButton.setImageBitmap(bitmap)
             binding.onSignupButton.text = ""
             Log.d(TAG, it.path!!)
@@ -125,5 +127,59 @@ class SignupActivity : AppCompatActivity() {
             Log.d(TAG, "exception: ${it.message}")
         }
 
+    }
+
+    private fun googleSignin() {
+        binding.googleSigninFab.setOnClickListener {
+            val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_login_id))
+                .requestEmail()
+                .build()
+            val signInIntent =  GoogleSignIn.getClient(this, options).signInIntent
+            startActivityForResult(signInIntent, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 0) {
+            val googleAccount = GoogleSignIn.getSignedInAccountFromIntent(data).result ?: return
+            firebaseAuthWithGoogle(googleAccount)
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(googleAccount: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(googleAccount.idToken, null)
+        FirebaseAuth.getInstance()
+            .signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success")
+                    addUserFromGoogle(googleAccount)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                }
+            }
+    }
+
+    private fun addUserFromGoogle(googleAccount: GoogleSignInAccount) {
+        val uid = FirebaseAuth.getInstance().uid ?: return
+        val user = User(
+            uid,
+            googleAccount.displayName ?: "username",
+            googleAccount.photoUrl.toString()
+        )
+        FirebaseDatabase.getInstance().getReference("/users/$uid")
+            .setValue(user).addOnSuccessListener {
+                Log.d(TAG, "successfully added user through Google")
+                val intent = Intent(this, NewestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+            }.addOnFailureListener {
+                Log.d(TAG, "exception: ${it.message}")
+            }
     }
 }

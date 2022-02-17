@@ -9,4 +9,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="already_signed_up_before">Already signed up before? Login</string>
     <string name="set_your_profile_picture">Click to set your Profile Picture</string>
+    <string name="google_icon">Google Icon</string>
+    <string name="web_login_id">207429729142-gaeq50oe73kb4i3jhcq5u7ahnrarn85i.apps.googleusercontent.com</string>
 </resources>

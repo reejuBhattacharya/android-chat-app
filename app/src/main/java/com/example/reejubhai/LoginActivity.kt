@@ -43,6 +43,5 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, it.message!!)
                 }
         }
-
     }
 }

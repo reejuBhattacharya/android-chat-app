@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "207429729142",
+    "firebase_url": "https://kotlin-chatapp-reeju-default-rtdb.firebaseio.com",
     "project_id": "kotlin-chatapp-reeju",
     "storage_bucket": "kotlin-chatapp-reeju.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "207429729142-8nb036ic0gmcbp5jaor3m8i1tm0q4fsn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reejubhai",
+            "certificate_hash": "8a2339bbf860fbce7a1b92a08875679019f647af"
+          }
+        },
         {
           "client_id": "207429729142-gaeq50oe73kb4i3jhcq5u7ahnrarn85i.apps.googleusercontent.com",
           "client_type": 3
