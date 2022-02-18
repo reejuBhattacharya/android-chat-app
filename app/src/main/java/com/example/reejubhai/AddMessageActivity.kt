@@ -19,19 +19,23 @@ class AddMessageActivity : AppCompatActivity() {
         fetchUsers()
         setContentView(binding.root)
 
+        // enable backbutton and add title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Select User"
     }
 
+    // fetches all available users in the database
     private fun fetchUsers() {
         val ref = FirebaseDatabase.getInstance().getReference("/users")
         ref.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList = mutableListOf()
+                // adds user to userList for the recyclerview
                 snapshot.children.forEach {
                     val user = it.getValue(User::class.java)
                     userList.add(user!!)
                 }
+                // adds recyclerview adapter with onClicklistener on each item
                 binding.recyclerviewAddMessage.adapter = AddMessageAdapter(userList) { position ->  
                     onListItemClick(position)
                 }
@@ -44,6 +48,7 @@ class AddMessageActivity : AppCompatActivity() {
         })
     }
 
+    // onClickListener for each item on the recyclerview
     private fun onListItemClick(position: Int)
     {
         val intent = Intent(this, ChatScreenActivity::class.java)

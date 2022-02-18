@@ -21,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
 
         setupLogin()
 
+        //ensures back button in sign-up page does not lead to login page
         binding.backtosignupTextView.setOnClickListener {
             finish()
         }
@@ -35,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     Log.d(TAG, "logged in successfully")
+                    // ensures back button does not lead the user to the login page
                     val intent = Intent(this, NewestMessagesActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)

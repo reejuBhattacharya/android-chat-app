@@ -25,6 +25,7 @@ class AddMessageAdapter(
             itemView.setOnClickListener(this)
         }
 
+        // item onClickListener 
         override fun onClick(v: View) {
             val position = adapterPosition
             onItemClicked(position)
