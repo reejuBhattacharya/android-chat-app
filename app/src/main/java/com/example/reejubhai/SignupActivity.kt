@@ -22,7 +22,8 @@ import java.util.*
 class SignupActivity : AppCompatActivity() {
 
     companion object {
-        const val TAG = "SignupActivity"
+        const val TAG = "SignupActivity",
+        const GSIGNIN_REQUEST_CODE = 0
     }
 
     private lateinit var binding : ActivitySignupBinding
@@ -40,6 +41,8 @@ class SignupActivity : AppCompatActivity() {
         googleSignin()
     }
 
+
+    // go to the Login Screen for users already signed up to the database
     private fun goToLogin()
     {
         binding.alreadysignedinTextview.setOnClickListener {
@@ -48,6 +51,8 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+
+    // Sign Up with email and password
     private fun signUp()
     {
         binding.signupButton.setOnClickListener {
@@ -57,19 +62,22 @@ class SignupActivity : AppCompatActivity() {
             Log.d(TAG, "email : $email")
             Log.d(TAG, "password : $password")
 
+            // validate the email and password values entered into the text fields    
             if(email.isEmpty() || password.isEmpty())
             {
                 Toast.makeText(this,
                     "Please fill all the details!", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-
+            // add the validated password to Firebase Authentication    
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if(!it.isSuccessful){
                         return@addOnCompleteListener
                     }
                     Log.d(TAG, "The user is: ${it.result?.user?.uid}")
+                    
+                    // starts process of adding the signed-in user to the database
                     uploadProfilePhotoToFirebase()
                 }
                 .addOnFailureListener {
@@ -78,6 +86,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    // helper function for uploading profile photo to database
     private fun selectProfilePhoto()
     {
         val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -93,6 +102,8 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    // main function for uploading profile photo to database. also sets in motion adding
+    // user data to database after photo is uploaded to Firebase Storage.
     private fun uploadProfilePhotoToFirebase(){
         if(profilePhotoUri==null)   return
 
@@ -100,8 +111,12 @@ class SignupActivity : AppCompatActivity() {
         val ref = FirebaseStorage.getInstance().getReference("/images/$uid")
         ref.putFile(profilePhotoUri!!).addOnSuccessListener {
             Log.d(TAG, "did it. ${it.metadata?.path}")
+
+            // add download link of profile photo to the user database
             ref.downloadUrl.addOnSuccessListener {
                 Log.d(TAG, "successfully got downloadUrl")
+
+                // makes call to add user info to database
                 saveProfileInDatabase(it.toString())
             }
         }
@@ -110,6 +125,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    // add user object to firebase database
     private fun saveProfileInDatabase(uri: String) {
         val uid = FirebaseAuth.getInstance().uid ?: return
         if(uri=="") return
@@ -120,6 +136,8 @@ class SignupActivity : AppCompatActivity() {
         val user = User(uid, username, uri)
         ref.setValue(user).addOnSuccessListener {
             Log.d(TAG, "successfully added user")
+
+            //make sure the back button does not return back to the Sign-In page
             val intent = Intent(this, NewestMessagesActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
@@ -129,6 +147,7 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
+    // implements Google Sign-In functionality
     private fun googleSignin() {
         binding.googleSigninFab.setOnClickListener {
             val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -136,35 +155,38 @@ class SignupActivity : AppCompatActivity() {
                 .requestEmail()
                 .build()
             val signInIntent =  GoogleSignIn.getClient(this, options).signInIntent
-            startActivityForResult(signInIntent, 0)
+            startActivityForResult(signInIntent, GSIGNIN_REQUEST_CODE)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 0) {
+        if (requestCode == GSIGNIN_REQUEST_CODE) {
+            // get google account and pass onto Firebase Authentication for sign-in
             val googleAccount = GoogleSignIn.getSignedInAccountFromIntent(data).result ?: return
             firebaseAuthWithGoogle(googleAccount)
         }
     }
 
+    // uses google account from Google Sign-in to sign-in using Firebase Authenticaton
     private fun firebaseAuthWithGoogle(googleAccount: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(googleAccount.idToken, null)
         FirebaseAuth.getInstance()
             .signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
+                    Log.d(TAG, "succesfully signed in with google credentials")
+                    // take user details (name, profile-img) from google account to
+                    // add to Firebase Database
                     addUserFromGoogle(googleAccount)
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    Log.w(TAG, "failure while google credential signin: ${task.exception}")
                 }
             }
     }
 
+    // function to add user details from Google account to database 
     private fun addUserFromGoogle(googleAccount: GoogleSignInAccount) {
         val uid = FirebaseAuth.getInstance().uid ?: return
         val user = User(
@@ -175,6 +197,7 @@ class SignupActivity : AppCompatActivity() {
         FirebaseDatabase.getInstance().getReference("/users/$uid")
             .setValue(user).addOnSuccessListener {
                 Log.d(TAG, "successfully added user through Google")
+                // ensures back button does not take user back to sign-up page
                 val intent = Intent(this, NewestMessagesActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
