@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.example.reejubhai.adapters.ChatScreenAdapter
 import com.example.reejubhai.databinding.ActivityChatScreenBinding
+import com.example.reejubhai.util_classes.ChatMessageDataBase
 import com.example.reejubhai.util_classes.Message
 import com.example.reejubhai.util_classes.User
 import com.google.firebase.auth.FirebaseAuth

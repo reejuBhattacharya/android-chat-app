@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.example.reejubhai.adapters.NewestMessageAdapater
 import com.example.reejubhai.databinding.ActivityNewestMessagesBinding
+import com.example.reejubhai.util_classes.ChatMessageDataBase
 import com.example.reejubhai.util_classes.NewestMessage
 import com.example.reejubhai.util_classes.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
