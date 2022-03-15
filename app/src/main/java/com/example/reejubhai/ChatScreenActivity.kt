@@ -3,7 +3,10 @@ package com.example.reejubhai
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.reejubhai.adapters.ChatScreenAdapter
 import com.example.reejubhai.databinding.ActivityChatScreenBinding
+import com.example.reejubhai.util_classes.Message
+import com.example.reejubhai.util_classes.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -14,6 +17,7 @@ import java.util.*
 class ChatScreenActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityChatScreenBinding
+
     private val messageList = mutableListOf<Message>()  // list of all messages (for recyclerview)
     private lateinit var otherUser: User  // person with whom current user is chatting
 

@@ -1,4 +1,4 @@
-package com.example.reejubhai
+package com.example.reejubhai.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.reejubhai.util_classes.NewestMessage
+import com.example.reejubhai.R
 import com.squareup.picasso.Picasso
 
 class NewestMessageAdapater(

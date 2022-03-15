@@ -1,4 +1,4 @@
-package com.example.reejubhai
+package com.example.reejubhai.util_classes
 
 import java.io.Serializable
 

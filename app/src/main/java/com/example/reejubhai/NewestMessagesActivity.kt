@@ -5,9 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.example.reejubhai.adapters.NewestMessageAdapater
 import com.example.reejubhai.databinding.ActivityNewestMessagesBinding
+import com.example.reejubhai.util_classes.NewestMessage
+import com.example.reejubhai.util_classes.User
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class NewestMessagesActivity : AppCompatActivity() {
 
@@ -15,24 +20,24 @@ class NewestMessagesActivity : AppCompatActivity() {
         var currentUser : User? = null
     }
 
-    private val newestMessages: MutableList<NewestMessage> = mutableListOf()  //message list for recyclerview
+    private val newestMessages: MutableList<NewestMessage> = mutableListOf()
     private lateinit var binding: ActivityNewestMessagesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNewestMessagesBinding.inflate(layoutInflater)
 
-        // initialize recyclerview adapter with messages list and onItemClickListener
         binding.newestMessagesRecyclerview.adapter = NewestMessageAdapater(newestMessages) { position ->
             onListItemClick(position)
         }
-        verifyUserLoggedIn()
+
+        verifyUserLoggedIn() //if not, reverts back to signup screen
         getCurrentUser()
         listenForLatestMessages()
+
         setContentView(binding.root)
     }
 
-    // handles menu item clicks
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId)
         {
@@ -42,7 +47,7 @@ class NewestMessagesActivity : AppCompatActivity() {
             }
             R.id.sign_out_menu -> {
                 FirebaseAuth.getInstance().signOut()
-                // makes sure the back button does not work after signing out of the app
+                signOutFromGoogle()
                 val intent = Intent(this, SignupActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
@@ -51,13 +56,18 @@ class NewestMessagesActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun signOutFromGoogle() {
+        GoogleSignIn.getClient(
+            this,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        ).signOut()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.newest_messages_activity_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    // since it is launcher screen, it checks whether user is logged in; if not, the user is redirected
-    // to the sign-up screen
     private fun verifyUserLoggedIn() {
         val uid = FirebaseAuth.getInstance().uid
         if(uid==null) {
@@ -67,7 +77,7 @@ class NewestMessagesActivity : AppCompatActivity() {
         }
     }
 
-    // gets the details of the current logged in user
+    // helper function to get details of the current user
     private fun getCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
@@ -83,11 +93,9 @@ class NewestMessagesActivity : AppCompatActivity() {
         })
     }
 
-    // a hashmap is used so that each user only has one associated chat message, which is updated
-    // as soon as a newer message is recieved in the database
     val map = HashMap<String, NewestMessage>()
 
-    // helper function to refresh the messages list for the recyclerview adapter
+    // helper function to refresh recyclerview adapter on recieving new message
     private fun refreshRV() {
         map.values.forEach {
             newestMessages.add(it)
@@ -100,12 +108,9 @@ class NewestMessagesActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("/latest_messages/$uid")
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                // find the latest message and the user who sent it                   
                 val message = snapshot.getValue(ChatMessageDataBase::class.java) ?: return
                 val otherPersonId = if(message.fromId==uid) message.toId
                 else message.fromId
-
-                // get username and profile_img from the userId users database
                 FirebaseDatabase.getInstance().getReference("/users/$otherPersonId")
                     .addListenerForSingleValueEvent(object: ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
@@ -126,8 +131,8 @@ class NewestMessagesActivity : AppCompatActivity() {
 
                     })
             }
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {   
-                // we do the same thing as above 
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(ChatMessageDataBase::class.java) ?: return
                 val otherPersonId = if(message.fromId==uid) message.toId
                 else message.fromId
@@ -153,11 +158,8 @@ class NewestMessagesActivity : AppCompatActivity() {
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {}
-
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-
             override fun onCancelled(error: DatabaseError) {}
-
         })
     }
 
@@ -169,7 +171,6 @@ class NewestMessagesActivity : AppCompatActivity() {
             newestMessages[position].profileImageUrl
         )
         val intent = Intent(this, ChatScreenActivity::class.java)
-        // intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         intent.putExtra("USER_KEY", user)
         startActivity(intent)
     }

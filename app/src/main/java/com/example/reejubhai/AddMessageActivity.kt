@@ -3,7 +3,9 @@ package com.example.reejubhai
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.reejubhai.adapters.AddMessageAdapter
 import com.example.reejubhai.databinding.ActivityAddMessageBinding
+import com.example.reejubhai.util_classes.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -16,7 +18,9 @@ class AddMessageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddMessageBinding.inflate(layoutInflater)
+
         fetchUsers()
+
         setContentView(binding.root)
 
         // enable backbutton and add title
@@ -36,7 +40,7 @@ class AddMessageActivity : AppCompatActivity() {
                     userList.add(user!!)
                 }
                 // adds recyclerview adapter with onClicklistener on each item
-                binding.recyclerviewAddMessage.adapter = AddMessageAdapter(userList) { position ->  
+                binding.recyclerviewAddMessage.adapter = AddMessageAdapter(userList) { position ->
                     onListItemClick(position)
                 }
             }

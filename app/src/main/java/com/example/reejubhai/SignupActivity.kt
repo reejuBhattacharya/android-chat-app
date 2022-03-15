@@ -9,10 +9,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.reejubhai.databinding.ActivitySignupBinding
+import com.example.reejubhai.util_classes.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
@@ -22,8 +22,8 @@ import java.util.*
 class SignupActivity : AppCompatActivity() {
 
     companion object {
-        const val TAG = "SignupActivity",
-        const GSIGNIN_REQUEST_CODE = 0
+        const val TAG = "SignupActivity"
+        const val GSIGNIN_REQUEST_CODE = 0
     }
 
     private lateinit var binding : ActivitySignupBinding
@@ -131,7 +131,7 @@ class SignupActivity : AppCompatActivity() {
         if(uri=="") return
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val username = binding.signupUsernameEdittext.text.toString()
+        val username = binding.signupUsernameEdittext.text.toString().trim()
 
         val user = User(uid, username, uri)
         ref.setValue(user).addOnSuccessListener {
